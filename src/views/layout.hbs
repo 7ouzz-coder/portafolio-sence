@@ -1,117 +1,113 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
+
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{pageTitle}}</title>
-    
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#adc6ff",
-                        "primary-container": "#4d8eff",
-                        "on-primary": "#002e6a",
-                        "primary-fixed": "#d8e2ff",
-                        "secondary": "#4edea3",
-                        "secondary-fixed-dim": "#4edea3",
-                        "tertiary": "#ffb786",
-                        "background": "#131314",
-                        "surface": "#131314",
-                        "on-surface": "#e5e2e3",
-                        "on-surface-variant": "#c2c6d6",
-                        "surface-container": "#201f20",
-                        "surface-container-high": "#2a2a2b",
-                        "surface-container-highest": "#353436",
-                        "surface-container-lowest": "#0e0e0f",
-                        "outline-variant": "#424754"
-                        // Agrega el resto de tus colores aquí...
-                    },
-                    fontFamily: {
-                        "headline": ["Manrope"],
-                        "body": ["Inter"],
-                        "label": ["Inter"]
-                    }
-                }
-            }
-        }
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init({
+              publicKey: "{{emailjsUserId}}",
+            });
+        })();
     </script>
-    
-    <style>
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        body { background-color: #131314; color: #e5e2e3; font-family: 'Inter', sans-serif; }
-        .glass-nav { background: rgba(19, 19, 20, 0.6); backdrop-filter: blur(12px); }
-        html { scroll-behavior: smooth; }
-        .nav-link-active { color: #adc6ff !important; position: relative; }
-        .nav-link-active::after { 
-            content: ''; 
-            position: absolute; 
-            bottom: -8px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 4px; 
-            height: 4px; 
-            background-color: #adc6ff; 
-            border-radius: 50%; 
-        }
-    </style>
 </head>
-<body class="bg-surface text-on-surface selection:bg-primary selection:text-on-primary">
 
-    {{> navbar}}
-
-    {{#if successMessage}}
-    <div class="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 bg-secondary text-on-primary px-6 py-3 rounded-lg shadow-lg font-medium">
-        {{successMessage}}
-    </div>
-    {{/if}}
-
-    <main class="pt-24">
+<body>
+    <div class="desktop">
         {{{body}}}
-    </main>
 
-    {{> footer}}
+        <div class="taskbar">
+            <div class="taskbar-left">
+                <button class="start-button">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Windows_logo_-_2001.svg" width="18" style="margin-right:5px; filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.5));">
+                    inicio
+                </button>
+                
+                <div class="quick-launch" style="display:flex; align-items:center; margin: 0 5px 0 10px; gap: 6px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/Internet_Explorer_10%2B11_logo.svg" width="16" title="Internet Explorer" class="ql-icon">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Windows_Media_Player_11_logo.png" width="16" title="Windows Media Player" class="ql-icon">
+                    <span class="material-symbols-outlined ql-icon" style="font-size:18px; color:white; cursor:pointer;" title="Mostrar escritorio">desktop_windows</span>
+                    <div style="width: 1px; height: 22px; background: rgba(255,255,255,0.3); margin-left:2px; box-shadow: 1px 0 0px rgba(0,0,0,0.2);"></div>
+                </div>
+
+                <div id="taskbar-item" class="taskbar-item active" onclick="toggleMainApp()">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/df/Windows_Live_Messenger_logo.svg"
+                        width="14" style="margin-right:5px">
+                    Windows Live Messenger
+                </div>
+                
+                <div id="taskbar-item-chat" class="taskbar-item" onclick="toggleChatApp()" style="display:none;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/df/Windows_Live_Messenger_logo.svg"
+                        width="14" style="margin-right:5px; filter: grayscale(1);">
+                    Conversación
+                </div>
+            </div>
+            <div class="taskbar-right">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/df/Windows_Live_Messenger_logo.svg" width="14" style="margin-right:8px; cursor:pointer;" title="Windows Live Messenger" onclick="toggleMainApp()">
+                <div class="volume-container" style="position:relative; display:flex; align-items:center;">
+                    <span class="material-symbols-outlined" style="font-size:15px; margin-right:8px; cursor:pointer;" title="Volumen" onclick="toggleVolume(event)">volume_up</span>
+                    
+                    <div id="volume-popup" style="display:none; position:absolute; bottom:25px; left:-50px; background:#ece9d8; border:1px solid #0054e3; border-radius:3px; padding:10px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); z-index:9999; flex-direction:column; align-items:center; cursor:default;">
+                        <span style="font-size:11px; color:black; margin-bottom:10px; font-weight:bold;">Volumen</span>
+                        <input type="range" id="volume-slider" min="0" max="100" value="50" onchange="playBlip()" style="writing-mode: bt-lr; -webkit-appearance: slider-vertical; height: 100px; width:20px; cursor:pointer;">
+                        <span class="material-symbols-outlined" style="margin-top:10px; color:#1d52bc; font-size:18px;">volume_up</span>
+                    </div>
+                </div>
+                <span id="clock" style="margin-left:5px; cursor:default; font-size:11px;">12:00 p.m.</span>
+            </div>
+        </div>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sections = document.querySelectorAll('section[id]');
-            const navLinks = document.querySelectorAll('.glass-nav a[href^="#"]');
-            
-            function updateActiveLink() {
-                const scrollY = window.pageYOffset;
-                
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop - 100; // Offset para activar antes de llegar exactamente
-                    const sectionHeight = section.offsetHeight;
-                    const sectionId = section.getAttribute('id');
-                    
-                    if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
-                        // Remover clase activa de todos los enlaces
-                        navLinks.forEach(link => link.classList.remove('nav-link-active'));
-                        
-                        // Agregar clase activa al enlace correspondiente
-                        const activeLink = document.querySelector(`.glass-nav a[href="#${sectionId}"]`);
-                        if (activeLink) {
-                            activeLink.classList.add('nav-link-active');
-                        }
-                    }
-                });
-            }
-            
-            // Actualizar al cargar la página
-            updateActiveLink();
-            
-            // Actualizar durante el scroll
-            window.addEventListener('scroll', updateActiveLink);
-        });
-    </script>
+        function toggleVolume(e) {
+            e.stopPropagation();
+            const popup = document.getElementById('volume-popup');
+            popup.style.display = popup.style.display === 'none' ? 'flex' : 'none';
+        }
 
+        document.addEventListener('click', function(e) {
+            const popup = document.getElementById('volume-popup');
+            if (popup && popup.style.display === 'flex' && !e.target.closest('.volume-container')) {
+                popup.style.display = 'none';
+            }
+        });
+
+        let audioCtx;
+        function playBlip() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            const volume = document.getElementById('volume-slider').value / 100;
+            if (volume === 0) return;
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.type = 'sine';
+            oscillator.frequency.value = 800;
+            gainNode.gain.setValueAtTime(volume * 0.3, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.2);
+        }
+
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'p.m.' : 'a.m.';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('clock').innerText = hours + ':' + minutes + ' ' + ampm;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
 </body>
+
 </html>

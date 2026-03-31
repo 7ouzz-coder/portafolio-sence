@@ -1,6 +1,496 @@
-{{> hero data=heroData}}
-{{> about data=aboutData}}
-{{> experience data=experienceData}}
-{{> projects data=projectsData}}
-{{> stack data=stackData}}
-{{> contact data=contactData}}
+<div class="wlm-window" id="wlm-app">
+    <div class="resizer resizer-r"></div>
+    <div class="resizer resizer-b"></div>
+    <div class="resizer resizer-br"></div>
+    <div class="resizer resizer-l"></div>
+    <div class="resizer resizer-t"></div>
+    <div class="title-bar" id="drag-handle">
+        <div class="title-bar-drag">
+            <div class="title-bar-text">
+                <img src="/public/img/bliss.jpg" width="14">
+                Windows Live Messenger
+            </div>
+        </div>
+        <div class="controls">
+            <button class="btn-min" onclick="minimizeApp()">_</button>
+            <button class="btn-max" onclick="maximizeApp('wlm-app')">□</button>
+            <button class="btn-close" onclick="closeApp()">X</button>
+        </div>
+    </div>
+
+    <div class="wlm-menu">
+        <span>Archivo</span>
+        <span>Contactos</span>
+        <span>Acciones</span>
+        <span>Herramientas</span>
+        <span>Ayuda</span>
+    </div>
+
+    <div class="wlm-header">
+        <div class="avatar-container">
+            <img src="{{aboutData.imageUrl}}" width="64" height="64" style="object-fit:cover">
+        </div>
+        <div class="user-info">
+            <div class="user-name">{{siteConfig.brandName}} <span
+                    style="font-weight:normal; color:#555">(Conectado)</span></div>
+            <div class="user-sub">&lt;{{{heroData.subtitle}}}&gt;</div>
+            <div class="user-status">Haz clic aquí para cambiar tu estado o tu nombre.</div>
+        </div>
+    </div>
+
+    <div class="wlm-main">
+        <div class="contact-group">
+            <div class="group-title" onclick="toggleGroup('group-portafolio')">Portafolio (4/4)</div>
+            <div id="group-portafolio">
+                <div class="contact-item" onclick="openChat('about', 'Sobre Mí', '{{siteConfig.brandName}}')">
+                    <span class="contact-icon"></span>
+                    <span class="contact-name">Sobre Mí</span>
+                    <span class="contact-desc">- Conoce más de mi perfil</span>
+                </div>
+                <div class="contact-item" onclick="openChat('projects', 'Proyectos', 'Mis Trabajos')">
+                    <span class="contact-icon"></span>
+                    <span class="contact-name">Proyectos</span>
+                    <span class="contact-desc">- Lo que he construido</span>
+                </div>
+                <div class="contact-item" onclick="openChat('stack', 'Stack Tecnológico', 'Herramientas')">
+                    <span class="contact-icon"></span>
+                    <span class="contact-name">Stack</span>
+                    <span class="contact-desc">- Mis habilidades</span>
+                </div>
+                <div class="contact-item" onclick="openContactForm()">
+                    <span class="contact-icon"></span>
+                    <span class="contact-name">Contactar</span>
+                    <span class="contact-desc">- Enviar correo (EmailJS)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-group">
+            <div class="group-title" onclick="toggleGroup('group-offline')">Sin conexión (1)</div>
+            <div id="group-offline" style="opacity: 0.7">
+                <div class="contact-item">
+                    <span class="contact-icon offline"></span>
+                    <span class="contact-name">Descargar CV</span>
+                    <span class="contact-desc">- (Ausente)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ventana de Chat con detalles del Portafolio -->
+<div class="wlm-chat" id="wlm-chat" style="display:none;">
+    <div class="resizer resizer-r"></div>
+    <div class="resizer resizer-b"></div>
+    <div class="resizer resizer-br"></div>
+    <div class="resizer resizer-l"></div>
+    <div class="resizer resizer-t"></div>
+    <div class="title-bar" id="chat-drag-handle">
+        <div class="title-bar-drag">
+            <div class="title-bar-text" id="chat-title-text">
+                <img src="img/bliss.jpg" width="14">
+                Chat
+            </div>
+        </div>
+        <div class="controls">
+            <button class="btn-min" onclick="minimizeChatApp()">_</button>
+            <button class="btn-max" onclick="maximizeApp('wlm-chat')">□</button>
+            <button class="btn-close" onclick="closeChatApp()">X</button>
+        </div>
+    </div>
+
+    <div class="wlm-menu">
+        <span>Archivo</span>
+        <span>Editar</span>
+        <span>Ver</span>
+        <span>Acciones</span>
+        <span>Ayuda</span>
+    </div>
+
+    <div
+        style="background: white; padding: 5px; border-bottom: 1px solid #a3bde3; display:flex; align-items:center; gap:10px;">
+        <img src="{{aboutData.imageUrl}}" width="48" height="48"
+            style="border:1px solid #ccc; padding:2px; border-radius:3px; object-fit:cover;">
+        <div>
+            <div style="font-weight:bold; color:#00308a;" id="chat-header-name">Nombre</div>
+            <div style="font-size:11px; color:#666;">Dice: <span id="chat-header-sub">Mensaje</span></div>
+        </div>
+    </div>
+
+    <div class="chat-history" id="chat-history">
+        <div class="chat-message">
+            <div class="chat-sender">
+                <span id="chat-msg-sender">Sistema</span>
+                <span style="color:#aaa; font-weight:normal; font-size:10px;">12:00</span>
+            </div>
+            <div class="chat-body" id="chat-content">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-input-area">
+        <div
+            style="display:flex; gap:8px; border-bottom:1px solid #eee; padding-bottom:5px; margin-bottom:5px; color:#555;">
+            <span class="material-symbols-outlined" style="font-size:18px; cursor:pointer;"
+                title="Fuente">text_format</span>
+            <span class="material-symbols-outlined" style="font-size:18px; cursor:pointer;"
+                title="Emoticonos">mood</span>
+            <span class="material-symbols-outlined" style="font-size:18px; cursor:pointer;" title="Voz">mic</span>
+            <span class="material-symbols-outlined" style="font-size:18px; cursor:pointer;"
+                title="Enviar archivo">attach_file</span>
+            <span class="material-symbols-outlined" style="font-size:18px; cursor:pointer;"
+                title="Juegos">sports_esports</span>
+        </div>
+        <div style="flex:1;">Escribe un mensaje aquí...</div>
+    </div>
+</div>
+
+<!-- Sections Content -->
+<div style="display:none;" id="content-about">{{> about data=aboutData}}</div>
+<div style="display:none;" id="content-projects">{{> projects data=projectsData}}</div>
+<div style="display:none;" id="content-stack">{{> stack data=stackData}}</div>
+
+<div id="wlm-toast" class="wlm-toast" onclick="restoreWindow(); hideToast();">
+    <div class="toast-header">
+        <span>Windows Live Messenger</span>
+        <span onclick="hideToast(); event.stopPropagation();" style="cursor:pointer; color:#0054E3;">X</span>
+    </div>
+    <div class="toast-content">
+        <img src="{{aboutData.imageUrl}}" class="toast-avatar" style="object-fit:cover;">
+        <div>
+            <b style="color:#00308a; font-size:12px;">{{siteConfig.brandName}}</b><br>
+            Acaba de iniciar sesión.
+        </div>
+    </div>
+</div>
+
+<script>
+    const app = document.getElementById('wlm-app');
+    const chatApp = document.getElementById('wlm-chat');
+    const taskItem = document.getElementById('taskbar-item');
+    const taskItemChat = document.getElementById('taskbar-item-chat');
+    const toast = document.getElementById('wlm-toast');
+
+    function setActiveTaskbar(id) {
+        if (taskItem) taskItem.classList.remove('active');
+        if (taskItemChat) taskItemChat.classList.remove('active');
+
+        if (id === 'wlm-app' && taskItem) taskItem.classList.add('active');
+        if (id === 'wlm-chat' && taskItemChat) taskItemChat.classList.add('active');
+    }
+
+    // Hacer que los elemntos sean arrastrables
+    function makeDraggable(el, handleId) {
+        let isDown = false, offset = [0, 0];
+        const handle = document.getElementById(handleId);
+
+        handle.onmousedown = (e) => {
+            isDown = true;
+            document.querySelectorAll('.wlm-window, .wlm-chat').forEach(w => w.style.zIndex = 100);
+            el.style.zIndex = 105; // traer al frente
+            setActiveTaskbar(el.id);
+            
+            const rect = el.getBoundingClientRect();
+            offset = [rect.left - e.clientX, rect.top - e.clientY];
+            el.style.left = rect.left + 'px';
+            el.style.top = rect.top + 'px';
+            el.style.transform = 'none';
+        };
+
+        document.addEventListener('mouseup', () => { isDown = false; });
+        document.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            el.style.left = (e.clientX + offset[0]) + 'px';
+            el.style.top = (e.clientY + offset[1]) + 'px';
+            el.style.transform = 'none';
+        });
+
+        // traer al frente al hacer clic en cualquier parte de la ventana, no solo el título
+        el.onmousedown = () => {
+            document.querySelectorAll('.wlm-window, .wlm-chat').forEach(w => w.style.zIndex = 100);
+            el.style.zIndex = 105;
+            setActiveTaskbar(el.id);
+        };
+    }
+
+    makeDraggable(app, 'drag-handle');
+    makeDraggable(chatApp, 'chat-drag-handle');
+
+    // hacer que los elementos sean redimensionables
+    function makeResizable(el) {
+        const resizers = el.querySelectorAll('.resizer');
+        resizers.forEach(r => {
+            r.addEventListener('mousedown', function (e) {
+                e.preventDefault();
+                let rect = el.getBoundingClientRect();
+                let startX = e.clientX;
+                let startY = e.clientY;
+                let startWidth = rect.width;
+                let startHeight = rect.height;
+                let startLeft = rect.left;
+                let startTop = rect.top;
+                
+                el.style.left = startLeft + 'px';
+                el.style.top = startTop + 'px';
+                el.style.transform = 'none';
+
+                function onMouseMove(moveEvent) {
+                    if (r.classList.contains('resizer-r')) {
+                        el.style.width = startWidth + (moveEvent.clientX - startX) + 'px';
+                    }
+                    if (r.classList.contains('resizer-b')) {
+                        el.style.height = startHeight + (moveEvent.clientY - startY) + 'px';
+                    }
+                    if (r.classList.contains('resizer-br')) {
+                        el.style.width = startWidth + (moveEvent.clientX - startX) + 'px';
+                        el.style.height = startHeight + (moveEvent.clientY - startY) + 'px';
+                    }
+                    if (r.classList.contains('resizer-l')) {
+                        el.style.width = startWidth - (moveEvent.clientX - startX) + 'px';
+                        el.style.left = startLeft + (moveEvent.clientX - startX) + 'px';
+                    }
+                    if (r.classList.contains('resizer-t')) {
+                        el.style.height = startHeight - (moveEvent.clientY - startY) + 'px';
+                        el.style.top = startTop + (moveEvent.clientY - startY) + 'px';
+                    }
+                }
+
+                function onMouseUp() {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                }
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+        });
+    }
+
+    makeResizable(app);
+    makeResizable(chatApp);
+
+    // Funciones de control de ventanas
+    function toggleMainApp() {
+        if (app.style.display === 'none') {
+            app.style.display = 'flex';
+            document.querySelectorAll('.wlm-window, .wlm-chat').forEach(w => w.style.zIndex = 100);
+            app.style.zIndex = 105;
+            setActiveTaskbar('wlm-app');
+        } else {
+            if (app.style.zIndex == 105) {
+                app.style.display = 'none';
+                if (taskItem) taskItem.classList.remove('active');
+            } else {
+                document.querySelectorAll('.wlm-window, .wlm-chat').forEach(w => w.style.zIndex = 100);
+                app.style.zIndex = 105;
+                setActiveTaskbar('wlm-app');
+            }
+        }
+    }
+
+    function toggleChatApp() {
+        if (chatApp.style.display === 'none') {
+            chatApp.style.display = 'flex';
+            document.querySelectorAll('.wlm-window, .wlm-chat').forEach(w => w.style.zIndex = 100);
+            chatApp.style.zIndex = 105;
+            setActiveTaskbar('wlm-chat');
+        } else {
+            if (chatApp.style.zIndex == 105) {
+                chatApp.style.display = 'none';
+                if (taskItemChat) taskItemChat.classList.remove('active');
+            } else {
+                document.querySelectorAll('.wlm-window, .wlm-chat').forEach(w => w.style.zIndex = 100);
+                chatApp.style.zIndex = 105;
+                setActiveTaskbar('wlm-chat');
+            }
+        }
+    }
+
+    function minimizeApp() {
+        app.style.display = 'none';
+        if (taskItem) taskItem.classList.remove('active');
+    }
+
+    function minimizeChatApp() {
+        chatApp.style.display = 'none';
+        if (taskItemChat) taskItemChat.classList.remove('active');
+    }
+
+    function closeApp() {
+        app.style.display = 'none';
+        chatApp.style.display = 'none';
+        if (taskItem) taskItem.style.display = 'none';
+        if (taskItemChat) taskItemChat.style.display = 'none';
+
+        setTimeout(() => {
+            if (taskItem) taskItem.style.display = 'flex';
+            toast.classList.add('show');
+            setTimeout(hideToast, 5000);
+        }, 1500);
+    }
+
+    function closeChatApp() {
+        chatApp.style.display = 'none';
+        if (taskItemChat) taskItemChat.style.display = 'none';
+    }
+
+    // Mostrar toast de inicio de sesión al cargar la página
+    setTimeout(() => {
+        toast.classList.add('show');
+        setTimeout(hideToast, 5000);
+    }, 1000);
+
+    function hideToast() {
+        toast.classList.remove('show');
+    }
+
+    let maximizedState = {};
+    function maximizeApp(id) {
+        const el = document.getElementById(id);
+        if (maximizedState[id]) {
+            el.style.width = maximizedState[id].width;
+            el.style.height = maximizedState[id].height;
+            el.style.left = maximizedState[id].left;
+            el.style.top = maximizedState[id].top;
+            el.style.transform = maximizedState[id].transform;
+            maximizedState[id] = null;
+        } else {
+            maximizedState[id] = {
+                width: el.style.width || getComputedStyle(el).width,
+                height: el.style.height || getComputedStyle(el).height,
+                left: el.style.left,
+                top: el.style.top,
+                transform: el.style.transform
+            };
+            el.style.width = '100vw';
+            el.style.height = 'calc(100vh - 30px)';
+            el.style.left = '0';
+            el.style.top = '0';
+            el.style.transform = 'none';
+        }
+    }
+
+    function toggleGroup(id) {
+        const group = document.getElementById(id);
+        group.style.display = group.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function openChat(sectionId, title, senderName) {
+        // contacto activo en el menú
+        document.querySelectorAll('.contact-item').forEach(i => i.classList.remove('active'));
+        if (event) {
+            event.currentTarget.classList.add('active');
+        }
+
+        // setup de la ventana de chat
+        document.getElementById('chat-title-text').innerHTML = `<img src="img/bliss.jpg" width="14" style="margin-right:5px;"> ${title} - Conversación`;
+        document.getElementById('chat-header-name').innerText = title;
+        document.getElementById('chat-header-sub').innerText = `Mostrando sección de portafolio...`;
+
+        const now = new Date();
+        const timeStr = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+
+        document.getElementById('chat-msg-sender').innerText = senderName || '{{siteConfig.brandName}}';
+        document.querySelector('.chat-sender span:nth-child(2)').innerText = timeStr;
+
+        // Inyectar contenido de la sección al área de chat
+        const contentHtml = document.getElementById('content-' + sectionId).innerHTML;
+        document.getElementById('chat-content').innerHTML = `
+            <p style="color:#666; font-style:italic; font-size:11px; text-align:center; padding:5px 0; border-bottom:1px solid #eee; margin-bottom:10px;">
+                Has iniciado una conversación con ${title}.
+            </p>
+            ${contentHtml}
+        `;
+
+        // Mostrar ventana y item de taskbar
+        chatApp.style.display = 'flex';
+        if (taskItemChat) {
+            taskItemChat.style.display = 'flex';
+            taskItemChat.innerHTML = `<img src="img/bliss.jpg" width="14" style="margin-right:5px; filter: grayscale(1);"> ${title}`;
+        }
+
+        // traer al frente
+        document.querySelectorAll('.wlm-window, .wlm-chat').forEach(w => w.style.zIndex = 100);
+        chatApp.style.zIndex = 105;
+        setActiveTaskbar('wlm-chat');
+    }
+
+    function openContactForm() {
+        // Contacto activo en el menú
+        document.querySelectorAll('.contact-item').forEach(i => i.classList.remove('active'));
+        if (event) event.currentTarget.classList.add('active');
+
+        // Setup de la ventana de chat para el formulario de contacto
+        const title = 'Contactarme';
+        document.getElementById('chat-title-text').innerHTML = `<img src="img/bliss.jpg" width="14" style="margin-right:5px;"> ${title} - Conversación`;
+        document.getElementById('chat-header-name').innerText = title;
+        document.getElementById('chat-header-sub').innerText = `Enviando un e-mail a través de MSN...`;
+
+        const now = new Date();
+        const timeStr = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+
+        document.getElementById('chat-msg-sender').innerText = 'Sistema';
+        document.querySelector('.chat-sender span:nth-child(2)').innerText = timeStr;
+
+        // Inyectar formulario de contacto al área de chat
+        document.getElementById('chat-content').innerHTML = `
+            <p style="color:#666; font-style:italic; font-size:11px; text-align:center; padding:5px 0; border-bottom:1px solid #eee; margin-bottom:10px;">
+                Has iniciado el asistente de correo. Escribe tu mensaje abajo.
+            </p>
+            <form id="msn-contact-form" onsubmit="sendEmailJS(event)" style="display:flex; flex-direction:column; gap:8px;">
+                <div>
+                    <label style="font-size:11px; font-weight:bold; color:#00308a;">Tu Correo:</label><br>
+                    <input type="email" id="sender_email" required style="width:100%; border:1px solid #a3bde3; padding:4px;" placeholder="usuario@hotmail.com">
+                </div>
+                <div>
+                    <label style="font-size:11px; font-weight:bold; color:#00308a;">Asunto:</label><br>
+                    <input type="text" id="email_subject" required style="width:100%; border:1px solid #a3bde3; padding:4px;" placeholder="Oferta laboral">
+                </div>
+                <div>
+                    <label style="font-size:11px; font-weight:bold; color:#00308a;">Mensaje:</label><br>
+                    <textarea id="email_message" required rows="4" style="width:100%; border:1px solid #a3bde3; padding:4px; resize:vertical; font-family:inherit;"></textarea>
+                </div>
+                <button type="submit" style="background: linear-gradient(to bottom, #dbe9f9 0%, #b2cfee 100%); border: 1px solid #00308a; padding:5px 15px; cursor:pointer; font-weight:bold; border-radius:3px; color:#00308a; align-self:flex-end;">Enviar (Zumbido)</button>
+            </form>
+        `;
+
+        // Mostrar ventana y item de taskbar
+        chatApp.style.display = 'flex';
+        if (taskItemChat) {
+            taskItemChat.style.display = 'flex';
+            taskItemChat.innerHTML = `<img src="img/bliss.jpg" width="14" style="margin-right:5px; filter: grayscale(1);"> ${title}`;
+        }
+
+        document.querySelectorAll('.wlm-window, .wlm-chat').forEach(w => w.style.zIndex = 100);
+        chatApp.style.zIndex = 105;
+        setActiveTaskbar('wlm-chat');
+    }
+
+    function sendEmailJS(e) {
+        e.preventDefault();
+
+        // Mostrar toast de envío
+        const toastContent = document.querySelector('.toast-content div');
+        toastContent.innerHTML = '<b style="color:#00308a; font-size:12px;">Enviando...</b><br>Por favor espera.';
+        toast.classList.add('show');
+
+        const templateParams = {
+            sender_email: document.getElementById('sender_email').value,
+            subject: document.getElementById('email_subject').value,
+            message: document.getElementById('email_message').value
+        };
+
+        emailjs.send('EMAILJS_SERVICEID', 'EMAILJS_TEMPLATEID', templateParams)
+            .then(function (response) {
+                console.log('SUCCESS!', response.status, response.text);
+                toastContent.innerHTML = '<b style="color:#00308a; font-size:12px;">Éxito!</b><br>Mensaje enviado correctamente.';
+                document.getElementById('msn-contact-form').reset();
+                setTimeout(hideToast, 4000);
+            }, function (error) {
+                console.log('FAILED...', error);
+                toastContent.innerHTML = '<b style="color:red; font-size:12px;">Error</b><br>Fallo al enviar el mensaje. Revisa tu consola.';
+                setTimeout(hideToast, 4000);
+            });
+    }
+</script>
