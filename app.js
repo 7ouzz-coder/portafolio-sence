@@ -1,10 +1,8 @@
 require('dotenv').config();
-const app = require("./server");
-const { sequelize } = require("./src/models");
+const app = require('./server');
 
 const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
-    sequelize.sync()
-    console.log(`Server is running on  http://localhost:${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });

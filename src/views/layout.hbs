@@ -7,14 +7,8 @@
     <title>{{pageTitle}}</title>
     <link rel="stylesheet" href="/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <!-- SDK de EmailJS, necesario para enviar correos desde el formulario de contacto -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script type="text/javascript">
-        (function() {
-            emailjs.init({
-              publicKey: "{{emailjsUserId}}",
-            });
-        })();
-    </script>
 </head>
 
 <body>
@@ -24,41 +18,77 @@
         <div class="taskbar">
             <div class="taskbar-left">
                 <button class="start-button">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Windows_logo_-_2001.svg" width="18" style="margin-right:5px; filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.5));">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Unofficial_Windows_logo_variant_-_2002%E2%80%932012_%28Multicolored%29.svg"
+                        width="18"
+                        style="margin-right:5px; filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.5));">
                     inicio
                 </button>
-                
-                <div class="quick-launch" style="display:flex; align-items:center; margin: 0 5px 0 10px; gap: 6px;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/Internet_Explorer_10%2B11_logo.svg" width="16" title="Internet Explorer" class="ql-icon">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Windows_Media_Player_11_logo.png" width="16" title="Windows Media Player" class="ql-icon">
-                    <span class="material-symbols-outlined ql-icon" style="font-size:18px; color:white; cursor:pointer;" title="Mostrar escritorio">desktop_windows</span>
-                    <div style="width: 1px; height: 22px; background: rgba(255,255,255,0.3); margin-left:2px; box-shadow: 1px 0 0px rgba(0,0,0,0.2);"></div>
+
+                <div class="quick-launch"
+                    style="display:flex; align-items:center; margin: 0 5px 0 10px; gap: 6px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/Internet_Explorer_10%2B11_logo.svg"
+                        width="16" title="Internet Explorer" class="ql-icon">
+                    <img src="https://static.wikia.nocookie.net/logopedia/images/c/c9/Icon_wmp.png/revision/latest/scale-to-width-down/1000?cb=20240407140444"
+                        width="16" title="Windows Media Player" class="ql-icon">
+                    <span class="material-symbols-outlined ql-icon"
+                        style="font-size:18px; color:white; cursor:pointer;"
+                        title="Mostrar escritorio">desktop_windows</span>
+                    <div style="width:1px; height:22px; background:rgba(255,255,255,0.3);
+                                margin-left:2px; box-shadow:1px 0 0 rgba(0,0,0,0.2);"></div>
                 </div>
 
+                <!-- Boton de la ventana principal de WLM -->
                 <div id="taskbar-item" class="taskbar-item active" onclick="toggleMainApp()">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/df/Windows_Live_Messenger_logo.svg"
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/WLM_logo.svg"
                         width="14" style="margin-right:5px">
                     Windows Live Messenger
                 </div>
-                
-                <div id="taskbar-item-chat" class="taskbar-item" onclick="toggleChatApp()" style="display:none;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/df/Windows_Live_Messenger_logo.svg"
-                        width="14" style="margin-right:5px; filter: grayscale(1);">
-                    Conversación
+
+                <!-- Boton de la primera ventana de chat, aparece al abrirla -->
+                <div id="taskbar-item-chat-1" class="taskbar-item" onclick="toggleChat(1)"
+                    style="display:none;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/WLM_logo.svg"
+                        width="14" style="margin-right:5px; filter:grayscale(1);">
+                    Conversacion 1
+                </div>
+
+                <!-- Boton de la segunda ventana de chat, aparece al abrirla -->
+                <div id="taskbar-item-chat-2" class="taskbar-item" onclick="toggleChat(2)"
+                    style="display:none;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/WLM_logo.svg"
+                        width="14" style="margin-right:5px; filter:grayscale(1);">
+                    Conversacion 2
                 </div>
             </div>
+
             <div class="taskbar-right">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/d/df/Windows_Live_Messenger_logo.svg" width="14" style="margin-right:8px; cursor:pointer;" title="Windows Live Messenger" onclick="toggleMainApp()">
-                <div class="volume-container" style="position:relative; display:flex; align-items:center;">
-                    <span class="material-symbols-outlined" style="font-size:15px; margin-right:8px; cursor:pointer;" title="Volumen" onclick="toggleVolume(event)">volume_up</span>
-                    
-                    <div id="volume-popup" style="display:none; position:absolute; bottom:25px; left:-50px; background:#ece9d8; border:1px solid #0054e3; border-radius:3px; padding:10px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); z-index:9999; flex-direction:column; align-items:center; cursor:default;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/WLM_logo.svg"
+                    width="14" style="margin-right:8px; cursor:pointer;" title="Windows Live Messenger"
+                    onclick="toggleMainApp()">
+
+                <div class="volume-container"
+                    style="position:relative; display:flex; align-items:center;">
+                    <span class="material-symbols-outlined"
+                        style="font-size:15px; margin-right:8px; cursor:pointer;"
+                        title="Volumen" onclick="toggleVolume(event)">volume_up</span>
+
+                    <div id="volume-popup"
+                        style="display:none; position:absolute; bottom:25px; left:-50px;
+                               background:#ece9d8; border:1px solid #0054e3; border-radius:3px;
+                               padding:10px; box-shadow:2px 2px 5px rgba(0,0,0,0.3);
+                               z-index:9999; flex-direction:column; align-items:center; cursor:default;">
                         <span style="font-size:11px; color:black; margin-bottom:10px; font-weight:bold;">Volumen</span>
-                        <input type="range" id="volume-slider" min="0" max="100" value="50" onchange="playBlip()" style="writing-mode: bt-lr; -webkit-appearance: slider-vertical; height: 100px; width:20px; cursor:pointer;">
-                        <span class="material-symbols-outlined" style="margin-top:10px; color:#1d52bc; font-size:18px;">volume_up</span>
+                        <input type="range" id="volume-slider" min="0" max="100" value="50"
+                            onchange="playBlip()"
+                            style="writing-mode:bt-lr; -webkit-appearance:slider-vertical;
+                                   height:100px; width:20px; cursor:pointer;">
+                        <span class="material-symbols-outlined"
+                            style="margin-top:10px; color:#1d52bc; font-size:18px;">volume_up</span>
                     </div>
                 </div>
-                <span id="clock" style="margin-left:5px; cursor:default; font-size:11px;">12:00 p.m.</span>
+
+                <span id="clock"
+                    style="margin-left:5px; cursor:default; font-size:11px;">12:00 p.m.</span>
             </div>
         </div>
     </div>
@@ -70,7 +100,8 @@
             popup.style.display = popup.style.display === 'none' ? 'flex' : 'none';
         }
 
-        document.addEventListener('click', function(e) {
+        // Cierra el popup de volumen si el usuario hace clic fuera de el
+        document.addEventListener('click', function (e) {
             const popup = document.getElementById('volume-popup');
             if (popup && popup.style.display === 'flex' && !e.target.closest('.volume-container')) {
                 popup.style.display = 'none';
@@ -80,30 +111,28 @@
         let audioCtx;
         function playBlip() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if(audioCtx.state === 'suspended') audioCtx.resume();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             const volume = document.getElementById('volume-slider').value / 100;
             if (volume === 0) return;
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.type = 'sine';
-            oscillator.frequency.value = 800;
-            gainNode.gain.setValueAtTime(volume * 0.3, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.start();
-            oscillator.stop(audioCtx.currentTime + 0.2);
+            const osc  = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = 800;
+            gain.gain.setValueAtTime(volume * 0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.2);
         }
 
         function updateClock() {
             const now = new Date();
-            let hours = now.getHours();
-            let minutes = now.getMinutes();
-            const ampm = hours >= 12 ? 'p.m.' : 'a.m.';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            document.getElementById('clock').innerText = hours + ':' + minutes + ' ' + ampm;
+            let h = now.getHours(), m = now.getMinutes();
+            const ampm = h >= 12 ? 'p.m.' : 'a.m.';
+            h = h % 12 || 12;
+            m = m < 10 ? '0' + m : m;
+            document.getElementById('clock').innerText = h + ':' + m + ' ' + ampm;
         }
         setInterval(updateClock, 1000);
         updateClock();
